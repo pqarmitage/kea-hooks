@@ -1,0 +1,12 @@
+# See https://reports.kea.isc.org/dev_guide/d8/d33/logKeaLogging.html#logMessageFiles
+# Example message file
+ 
+$NAMESPACE isc::log
+ 
+% LOG_UNRECOGNIZED_DIRECTIVE line %1: unrecognized directive '%2'
+A line starting with a dollar symbol was found, but the first word on the line
+(shown in the message) was not a recognized message compiler directive.
+ 
+% LOG_WRITE_ERROR error writing to %1: %2
+The specified error was encountered by the message compiler when writing to
+the named output file.
