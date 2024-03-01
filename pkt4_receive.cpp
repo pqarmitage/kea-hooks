@@ -2,6 +2,7 @@
  
 #include <hooks/hooks.h>
 #include <dhcp/pkt4.h>
+#include <dhcpsrv/srv_config.h>
 #include "library_common.h"
  
 #include <string>
@@ -12,6 +13,32 @@ using namespace std;
  
 extern "C" {
  
+int ddns4_update(CalloutHandle& handle) {
+	string hostname;
+	bool fwd_update = true;
+	bool rev_update = false;
+	Pkt4Ptr resp4;
+	string ci_addr_str;
+	DdnsParamsPtr ddns_params;
+	Subnet4Ptr subnet;
+
+	handle.getArgument("hostname", hostname);
+	handle.getArgument("fwd-update", fwd_update);
+	handle.getArgument("rev-update", rev_update);
+	handle.getArgument("response4", resp4);
+	handle.getArgument("ddns-params", ddns_params);
+	handle.getArgument("subnet4", subnet);
+
+	ci_addr_str = resp4->getCiaddr().toText();
+	interesting << "hostname " << hostname << " fwd: " << fwd_update << " rev: " << rev_update << "\n";
+	interesting << "   " << " ci " << ci_addr_str <<  " gi " << resp4->getGiaddr().toText() << " si " << resp4->getSiaddr().toText() << " yi " << resp4->getYiaddr().toText() << "\n";
+	uint32_t subnetid = ddns_params->getSubnetId();
+	std::pair<isc::asiolink::IOAddress, uint8_t> sn_addr = subnet->get();
+	interesting << "   Id: " << subnetid << " addr " << sn_addr.first.toText() << "/" << +sn_addr.second << "\n";
+
+	return 0;
+}
+
 // This callout is called at the "pkt4_receive" hook.
 int pkt4_receive(CalloutHandle& handle) {
  
@@ -32,6 +59,9 @@ int pkt4_receive(CalloutHandle& handle) {
 		sum += hwaddr_ptr->hwaddr_[i];
 	}
  
+string hwaddr1 = hwaddr_ptr->toText();
+interesting << hwaddr1 << " - Label " << query4_ptr->getLabel() << "\n";
+
 	// Classify it.
 	if (sum % 4 == 0) {
 		// Store the text form of the hardware address in the context to pass
