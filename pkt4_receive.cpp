@@ -15,6 +15,7 @@ extern "C" {
  
 int ddns4_update(CalloutHandle& handle) {
 	string hostname;
+	string new_hostname;
 	bool fwd_update = true;
 	bool rev_update = false;
 	Pkt4Ptr resp4;
@@ -34,7 +35,16 @@ int ddns4_update(CalloutHandle& handle) {
 	interesting << "   " << " ci " << ci_addr_str <<  " gi " << resp4->getGiaddr().toText() << " si " << resp4->getSiaddr().toText() << " yi " << resp4->getYiaddr().toText() << "\n";
 	uint32_t subnetid = ddns_params->getSubnetId();
 	std::pair<isc::asiolink::IOAddress, uint8_t> sn_addr = subnet->get();
-	interesting << "   Id: " << subnetid << " addr " << sn_addr.first.toText() << "/" << +sn_addr.second << "\n";
+	vector<uint8_t> addr_octets = sn_addr.first.toBytes();
+	interesting << "   Id: " << subnetid << " addr " << sn_addr.first.toText() << "/" << +sn_addr.second << " toText " << subnet->toText() << "subnet ref " << +addr_octets[2] << "\n";
+
+	if (addr_octets[2] != 53 ) {
+		new_hostname = hostname;
+		interesting << "About to modify " << new_hostname << " dot post " << new_hostname.find('.') << " insert " << to_string(addr_octets[2]) << "\n";
+		new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
+		interesting << hostname << " -> " << new_hostname << "\n";
+		handle.setArgument("hostname", new_hostname);
+	}
 
 	return 0;
 }
