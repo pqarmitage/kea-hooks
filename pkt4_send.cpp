@@ -3,10 +3,11 @@
 #include <hooks/hooks.h>
 #include <dhcp/pkt4.h>
 #include <dhcp/option_string.h>
-#include "library_common.h"
- 
 #include <string>
  
+#include "library_common.h"
+#include "pkt4_change_hostname_log.h"
+
 using namespace isc::dhcp;
 using namespace isc::hooks;
 using namespace std;
@@ -18,12 +19,22 @@ int pkt4_send(CalloutHandle& handle)
 {
 	Pkt4Ptr response4_ptr;
 	string orig_name;
+	string new_name;
 
 	handle.getArgument("response4", response4_ptr);
 
 	try {
 		handle.getContext("orig-name", orig_name);
-		handle.setArgument("hostname", orig_name);
+
+		try {
+			handle.getContext("new-name", new_name);
+			LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_RESTORED)
+				.arg(new_name)
+				.arg(orig_name);
+		} catch (const NoSuchCalloutContext&) {
+			LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_RESTORED_NO_NEW)
+				.arg(orig_name);
+		}
 	} catch (const NoSuchCalloutContext&) {
 		// No such element in the per-request context with the name "orig-name".
 		orig_name.clear();

@@ -1,1 +1,6 @@
 See src/lib/hooks/test/callout_params_library.cc and src/lib/cc/tests/data_unittests.cc for good examples.
+
+Copy cfg_globals.h from source distribution to /usr/include/kea if using v2.2.0 on Debian
+
+To build kea-msg-compiler, get message.cc from source distribution and run:
+g++ -I /usr/include/kea message.cc -lkea-log -lkea-util -lkea-exceptions -o kea-msg-compiler

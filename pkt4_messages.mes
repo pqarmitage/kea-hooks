@@ -3,10 +3,11 @@
  
 $NAMESPACE isc::log
  
-% LOG_UNRECOGNIZED_DIRECTIVE line %1: unrecognized directive '%2'
-A line starting with a dollar symbol was found, but the first word on the line
-(shown in the message) was not a recognized message compiler directive.
- 
-% LOG_WRITE_ERROR error writing to %1: %2
-The specified error was encountered by the message compiler when writing to
-the named output file.
+% LOG_HOSTNAME_MODIFIED hostname changed from %1 to %2
+The hostname was changed prior to the DDNS update
+
+% LOG_HOSTNAME_RESTORED hostname restored from %1 to %2
+The hostname has been restored after the DDNS update
+
+% LOG_HOSTNAME_RESTORED_NO_NEW hostname restored to %1
+The hostname has been restored after the DDNS update

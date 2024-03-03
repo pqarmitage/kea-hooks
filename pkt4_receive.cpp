@@ -3,9 +3,10 @@
 #include <hooks/hooks.h>
 #include <dhcp/pkt4.h>
 #include <dhcpsrv/srv_config.h>
-#include "library_common.h"
- 
 #include <string>
+
+#include "library_common.h"
+#include "pkt4_change_hostname_log.h"
  
 using namespace isc::dhcp;
 using namespace isc::hooks;
@@ -39,6 +40,11 @@ int ddns4_update(CalloutHandle& handle) {
 	new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
 	handle.setArgument("hostname", new_hostname);
 	handle.setContext("orig-name", hostname);
+	handle.setContext("new-name", new_hostname);
+
+	LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_MODIFIED)
+		.arg(hostname)
+		.arg(new_hostname);
 
 	OptionPtr opt_hostname = resp4->getOption(DHO_HOST_NAME);
 	if (opt_hostname && opt_hostname->toString() != hostname)
