@@ -38,15 +38,21 @@ int ddns4_update(CalloutHandle& handle) {
 	vector<uint8_t> addr_octets = sn_addr.first.toBytes();
 	interesting << "   Id: " << subnetid << " addr " << sn_addr.first.toText() << "/" << +sn_addr.second << " toText " << subnet->toText() << "subnet ref " << +addr_octets[2] << "\n";
 
-	if (addr_octets[2] != 53) {
-		new_hostname = hostname;
-		interesting << "About to modify " << new_hostname << " dot post " << new_hostname.find('.') << " insert " << to_string(addr_octets[2]) << "\n";
-		new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
-		interesting << hostname << " -> " << new_hostname << "\n";
-		handle.setArgument("hostname", new_hostname);
-//		string hwaddr = hwaddr_ptr->toText();
-		handle.setContext("orig-name", hostname);
-	}
+	if (addr_octets[2] == 53)
+		return 0;
+
+	new_hostname = hostname;
+	new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
+	handle.setArgument("hostname", new_hostname);
+	handle.setContext("orig-name", hostname);
+
+	OptionPtr opt_hostname = resp4->getOption(DHO_HOST_NAME);
+	if (opt_hostname)
+		handle.setContext("orig-hostname", opt_hostname->toString());
+
+	OptionPtr opt_fqdn = resp4->getOption(DHO_FQDN);
+	if (opt_fqdn)
+		handle.setContext("orig-fqdn", opt_fqdn->toString());
 
 interesting << resp4->toText() << endl;
 	return 0;
