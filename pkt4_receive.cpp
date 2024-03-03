@@ -47,11 +47,11 @@ int ddns4_update(CalloutHandle& handle) {
 	handle.setContext("orig-name", hostname);
 
 	OptionPtr opt_hostname = resp4->getOption(DHO_HOST_NAME);
-	if (opt_hostname)
+	if (opt_hostname && opt_hostname->toString() != hostname)
 		handle.setContext("orig-hostname", opt_hostname->toString());
 
 	OptionPtr opt_fqdn = resp4->getOption(DHO_FQDN);
-	if (opt_fqdn)
+	if (opt_fqdn && opt_fqdn->toString() != hostname)
 		handle.setContext("orig-fqdn", opt_fqdn->toString());
 
 interesting << resp4->toText() << endl;
