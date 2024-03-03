@@ -38,14 +38,17 @@ int ddns4_update(CalloutHandle& handle) {
 	vector<uint8_t> addr_octets = sn_addr.first.toBytes();
 	interesting << "   Id: " << subnetid << " addr " << sn_addr.first.toText() << "/" << +sn_addr.second << " toText " << subnet->toText() << "subnet ref " << +addr_octets[2] << "\n";
 
-	if (addr_octets[2] != 53 ) {
+	if (addr_octets[2] != 53) {
 		new_hostname = hostname;
 		interesting << "About to modify " << new_hostname << " dot post " << new_hostname.find('.') << " insert " << to_string(addr_octets[2]) << "\n";
 		new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
 		interesting << hostname << " -> " << new_hostname << "\n";
 		handle.setArgument("hostname", new_hostname);
+//		string hwaddr = hwaddr_ptr->toText();
+		handle.setContext("orig-name", hostname);
 	}
 
+interesting << resp4->toText() << endl;
 	return 0;
 }
 
