@@ -9,5 +9,8 @@ The hostname was changed prior to the DDNS update
 % LOG_HOSTNAME_RESTORED hostname restored from %1 to %2
 The hostname has been restored after the DDNS update
 
-% LOG_HOSTNAME_RESTORED_NO_NEW hostname restored to %1
-The hostname has been restored after the DDNS update
+% LOG_HOSTNAME_NO_ORIG unable to restore hostname from %1
+The hostname failed to be restored after the DDNS update
+
+% LOG_FQDN_NO_ORIG unable to restore FQDN from %1
+The FQDN failed to be restored after the DDNS update

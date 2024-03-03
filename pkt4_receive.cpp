@@ -39,19 +39,17 @@ int ddns4_update(CalloutHandle& handle) {
 	new_hostname = hostname;
 	new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
 	handle.setArgument("hostname", new_hostname);
-	handle.setContext("orig-name", hostname);
-	handle.setContext("new-name", new_hostname);
 
 	LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_MODIFIED)
 		.arg(hostname)
 		.arg(new_hostname);
 
 	OptionPtr opt_hostname = resp4->getOption(DHO_HOST_NAME);
-	if (opt_hostname && opt_hostname->toString() != hostname)
+	if (opt_hostname)
 		handle.setContext("orig-hostname", opt_hostname->toString());
 
 	OptionPtr opt_fqdn = resp4->getOption(DHO_FQDN);
-	if (opt_fqdn && opt_fqdn->toString() != hostname)
+	if (opt_fqdn && (!opt_hostname || opt_fqdn->toString() != opt_hostname->toText()))
 		handle.setContext("orig-fqdn", opt_fqdn->toString());
 
 	return 0;
