@@ -73,20 +73,11 @@ interesting << "No hwaddr callout\n"; flush(interesting);
 interesting << "I am here" << endl;
 
 interesting << "Pkt: " << response4_ptr->toText() << endl;
-interesting << "Done toTexzt" << endl; flush(interesting);
-OptionPtr opt_hostname;
-try {
+interesting << "Done toText" << endl; flush(interesting);
 interesting << "About to get option" << endl; flush(interesting);
-	opt_hostname = response4_ptr->getOption(DHO_HOST_NAME);
-interesting << "Got option" << endl; flush(interesting);
-} catch (exception e) {
-	interesting << "Failed to get HostName" << endl;
-	flush(interesting);
-	opt_hostname = NULL;
-}
+	OptionPtr opt_hostname = response4_ptr->getOption(DHO_HOST_NAME);
+interesting << "Got option " << (!opt_hostname ? "(NULL)" : "(success)") << endl; flush(interesting);
 
-interesting << "I am done get_option" << endl;
-flush(interesting);
 	if (opt_hostname) {
 		interesting << "opt_hostname " << opt_hostname->toString() << ": " << opt_hostname->toText() << endl;
 flush(interesting);
