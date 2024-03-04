@@ -34,7 +34,7 @@ int pkt4_send(CalloutHandle& handle)
 			response4_ptr->addOption(opt_hostname_resp);
 		} catch (const NoSuchCalloutContext&) {
 			// This would mean the kea has added the HOST_NAME option AFTER the call of ddns4_update()
-			LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_NO_ORIG)
+			LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::NCHG_HOSTNAME_NO_ORIG)
 				.arg(new_hostname);
 		}
 	}
@@ -58,13 +58,13 @@ int pkt4_send(CalloutHandle& handle)
 			response4_ptr->addOption(opt_fqdn_resp);
 		} else {
 			// This would mean the kea has added the FQDN option AFTER the call of ddns4_update()
-			LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_FQDN_NO_ORIG)
+			LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::NCHG_FQDN_NO_ORIG)
 				.arg(new_hostname);
 		}
 	}
 
 	if (!orig_hostname.empty() && !new_hostname.empty()) {
-		 LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_RESTORED)
+		 LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::NCHG_HOSTNAME_RESTORED)
 				.arg(new_hostname)
 				.arg(orig_hostname);
 	}

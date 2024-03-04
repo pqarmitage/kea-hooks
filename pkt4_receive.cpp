@@ -40,7 +40,7 @@ int ddns4_update(CalloutHandle& handle) {
 	new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
 	handle.setArgument("hostname", new_hostname);
 
-	LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::LOG_HOSTNAME_MODIFIED)
+	LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::NCHG_HOSTNAME_MODIFIED)
 		.arg(hostname)
 		.arg(new_hostname);
 

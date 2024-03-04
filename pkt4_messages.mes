@@ -3,14 +3,38 @@
  
 $NAMESPACE isc::log
  
-% LOG_HOSTNAME_MODIFIED hostname changed from %1 to %2
+% NCHG_HOSTNAME_MODIFIED hostname changed from %1 to %2
 The hostname was changed prior to the DDNS update
 
-% LOG_HOSTNAME_RESTORED hostname restored from %1 to %2
+% NCHG_HOSTNAME_RESTORED hostname restored from %1 to %2
 The hostname has been restored after the DDNS update
 
-% LOG_HOSTNAME_NO_ORIG unable to restore hostname from %1
+% NCHG_HOSTNAME_NO_ORIG unable to restore hostname from %1
 The hostname failed to be restored after the DDNS update
 
-% LOG_FQDN_NO_ORIG unable to restore FQDN from %1
+% NCHG_FQDN_NO_ORIG unable to restore FQDN from %1
 The FQDN failed to be restored after the DDNS update
+
+% NCHG_REQUIRES_CONFIG missing configuration
+No configuration has been provided
+
+% NCHG_PARAMETER_UNKNOWN parameter %1 is invalid
+The parameter specified is invalid
+
+% NCHG_IGNORE_SUBNETS_NOT_LIST parameter %1 value %2 is not a list 
+The ignore-subnets parameter value is not a list
+
+% NCHG_IGNORE_SUBNETS_LIST_MEMBER_NOT_STRING parameter %1 list entry %2 is not a string 
+The ignore-subnets parameter list entry is not a string
+
+% NCHG_PROCESS_SUBNETS_NOT_MAP parameter %1 value %2 is not a map 
+The process-subnets parameter value is not a list
+
+% NCHG_PROCESS_SUBNETS_MAP_VALUE_NOT_LIST parameter %1 map entry %2 value %3 is not a list
+The process-subnets parameter map entry is not a LIST
+
+% NCHG_PROCESS_SUBNETS_MAP_MEMBER_NOT_LIST parameter %1 map entry %2 is not a list 
+The process-subnets parameter map entry is not a LIST
+
+% NCHG_PROCESS_SUBNETS_MAP_LIST_MEMBER_NOT_STRING parameter %1 map entry %2 element %3 is not a string
+The process-subnets parameter map entry is not a LIST of strings
