@@ -79,6 +79,19 @@ getParameterNames(LibraryHandle& handle) {
 	return names;
 }
 
+/*
+ * Configuration:
+ *
+ * "ignore-subnets": [ "172.21.53.0/24", "192.168.0.0/16" ],
+ * "process-subnets": {
+ *	// use 3rd byte for number (e.g. 52), append "-52" to first part of FQDN add new
+ *	// second part of FQDN net34, remove 3rd part of FQDN.
+ *	// So tamar.armitage.org.uk becomes tamar-52.net34.armitage.uk
+ *     "172.21.48.0/20": [ "0.0.255.0", "$0-%d", "+$1net%x", "-$3" ],
+ *     "0.0.0.0/0", [ "0.255.255.0", "+$1net-%x" ]
+ *     "2001:470:69dd::/48", [ "0:0:0:ffff::", "$0-%d" ]
+ * }
+ */
 static bool
 processParameters(LibraryHandle& handle) {
 	isc::data::ConstElementPtr params = handle.getParameters();
