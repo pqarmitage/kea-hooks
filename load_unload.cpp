@@ -13,6 +13,9 @@
  
 #include "subnet.h"
 
+#include "load_unload.h"
+
+
 using namespace isc::hooks;
 using namespace isc::log;
 using namespace pkt4_change_hostname;

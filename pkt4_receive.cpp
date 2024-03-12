@@ -8,6 +8,10 @@
 #include "library_common.h"
 #include "pkt4_change_hostname_log.h"
  
+#include "load_unload.h"
+
+    #include <fstream>
+
 using namespace isc::dhcp;
 using namespace isc::hooks;
 using namespace std;
@@ -33,12 +37,19 @@ int ddns4_update(CalloutHandle& handle) {
 	std::pair<isc::asiolink::IOAddress, uint8_t> sn_addr = subnet->get();
 	vector<uint8_t> addr_octets = sn_addr.first.toBytes();
 
-	if (addr_octets[2] == 53)
-		return 0;
+	// Change if this is a subnet we are NOT changing
+	for (const auto& sn : ignore_subnets) {
+		if (sn.matches(sn_addr.first))
+			return 0;
+	}
 
-	new_hostname = hostname;
-	new_hostname.insert(new_hostname.find('.'), "-" + to_string(addr_octets[2]));
-	handle.setArgument("hostname", new_hostname);
+	// Update the hostname if the subnet matches
+	pqa::fqdn host(hostname);
+	host.update(sn_addr.first, name_changes);
+	new_hostname = host.str();
+
+	if (new_hostname != hostname)
+		handle.setArgument("hostname", new_hostname);
 
 	LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::NCHG_HOSTNAME_MODIFIED)
 		.arg(hostname)

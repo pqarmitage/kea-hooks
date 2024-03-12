@@ -1,3 +1,6 @@
+#ifndef _SUBNET_H_
+#define _SUBNET_H_
+
 // #define DEBUG
 
 #include <string>
@@ -14,17 +17,8 @@
 
 namespace pqa {
 
-void convert_v6_to_64s(const isc::asiolink::IOAddress& addr, uint64_t *val)
-{
-	std::vector<uint8_t> vec = addr.toBytes();
-	uint8_t bytes[vec.size()];
-	int i = 0;
+extern void convert_v6_to_64s(const isc::asiolink::IOAddress&, uint64_t *);
 
-	for (const auto &n : vec)
-		bytes[i++] = n;
-	val[0] = be64toh(*reinterpret_cast<uint64_t *>(&bytes[0]));
-	val[1] = be64toh(*reinterpret_cast<uint64_t *>(&bytes[sizeof(uint64_t)]));
-}
 
 // Used for the extraction of an element from the address for insertion
 // into the host name.
@@ -546,3 +540,5 @@ private:
 };
 
 }
+
+#endif
