@@ -33,6 +33,9 @@ The process-subnets parameter value is not a list
 % NCHG_PROCESS_SUBNETS_MAP_VALUE_NOT_LIST parameter %1 map entry %2 value %3 is not a list
 The process-subnets parameter map entry is not a LIST
 
+% NCHG_PROCESS_SUBNETS_MAP_KEY_NOT_STRING map key %1 is not a string 
+The process-subnets parameter map key is not a string
+
 % NCHG_PROCESS_SUBNETS_MAP_MEMBER_NOT_LIST parameter %1 map entry %2 is not a list 
 The process-subnets parameter map entry is not a LIST
 

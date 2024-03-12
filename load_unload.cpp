@@ -1,17 +1,29 @@
 // load_unload.c++
  
+#define TEST
+
 #include <hooks/hooks.h>
+#ifdef TEST
 #include <fstream>	// only needed for debug function getParameterNames()
+#endif
+#include <list>
 
 #include "library_common.h"
 #include "pkt4_change_hostname_log.h"
  
+#include "subnet.h"
+
 using namespace isc::hooks;
 using namespace isc::log;
 using namespace pkt4_change_hostname;
+using namespace pqa;
  
 extern "C" {
- 
+
+std::list<Subnet> ignore_subnets;
+Changes name_changes;
+
+#ifdef TEST
 static std::vector<std::string>
 getParameterNames(LibraryHandle& handle) {
 	std::vector<std::string> names;
@@ -78,6 +90,7 @@ getParameterNames(LibraryHandle& handle) {
 
 	return names;
 }
+#endif
 
 /*
  * Configuration:
@@ -85,11 +98,11 @@ getParameterNames(LibraryHandle& handle) {
  * "ignore-subnets": [ "172.21.53.0/24", "192.168.0.0/16" ],
  * "process-subnets": {
  *	// use 3rd byte for number (e.g. 52), append "-52" to first part of FQDN add new
- *	// second part of FQDN net34, remove 3rd part of FQDN.
+ *	// second part of FQDN net34, remove 4th part of FQDN.
  *	// So tamar.armitage.org.uk becomes tamar-52.net34.armitage.uk
- *     "172.21.48.0/20": [ "0.0.255.0", "$0-%d", "+$1net%x", "-$3" ],
- *     "0.0.0.0/0", [ "0.255.255.0", "+$1net-%x" ]
- *     "2001:470:69dd::/48", [ "0:0:0:ffff::", "$0-%d" ]
+ *     "172.21.48.0/20": [ "0.0.255.0", "0-%d", "1+net%x", "3-" ],
+ *     "0.0.0.0/0", [ "0.255.255.0", "1+net-%x" ]
+ *     "2001:470:69dd::/48", [ "0:0:0:ffff::", "0+-%d" ]
  * }
  */
 static bool
@@ -119,6 +132,8 @@ processParameters(LibraryHandle& handle) {
 					LOG_ERROR(pkt4_change_hostname_logger, NCHG_IGNORE_SUBNETS_LIST_MEMBER_NOT_STRING).arg(value->str()).arg(v->str());
 					return true;
 				}
+
+				ignore_subnets.push_back(Subnet(v->stringValue()));
 			}
 
 			continue;
@@ -133,6 +148,7 @@ processParameters(LibraryHandle& handle) {
 
 			const std::map<std::string, isc::data::ConstElementPtr>& val = value->mapValue();
 			for (const auto& v : val) {
+				std::list<std::string> rules;
 				if (v.second->getType() != isc::data::Element::list) {
 					LOG_ERROR(pkt4_change_hostname_logger, NCHG_PROCESS_SUBNETS_MAP_MEMBER_NOT_LIST).arg(v.first).arg(v.second->str());
 					return true;
@@ -143,7 +159,11 @@ processParameters(LibraryHandle& handle) {
 						LOG_ERROR(pkt4_change_hostname_logger, NCHG_PROCESS_SUBNETS_MAP_LIST_MEMBER_NOT_STRING).arg(v.first).arg(v.second->str()).arg(e->str());
 						return true;
 					}
+
+					rules.push_back(e->stringValue());
 				}
+
+				name_changes.add(nameChange(v.first, rules));
 			}
 
 			continue;
@@ -157,10 +177,12 @@ processParameters(LibraryHandle& handle) {
 }
 
 int load(LibraryHandle &handle) {
-	std::vector<std::string> names;
 	int ret;
 
+#ifdef TEST
+	std::vector<std::string> names;
 	names = getParameterNames(handle);
+#endif
 
 	ret = processParameters(handle);
 

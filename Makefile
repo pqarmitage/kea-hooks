@@ -17,6 +17,7 @@ multi_threading_compatible.o: multi_threading_compatible.cpp
 
 load_unload.o pkt4_receive.o pkt4_send.o:	library_common.h
 load_unload.o pkt4_receive.o pkt4_send.o pkt4_messages.o pkt4_change_hostname_log.o:	pkt4_messages.h
+load_unload.o:	subnet.h
 
 pkt4_messages.h pkt4_messages.cpp: pkt4_messages.mes
 	kea-msg-compiler -e cpp pkt4_messages.mes
