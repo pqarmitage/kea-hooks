@@ -1,7 +1,7 @@
-// pkt_receive4.cpp
+// pkt_receive6.cpp
  
 #include <hooks/hooks.h>
-#include <dhcp/pkt4.h>
+#include <dhcp/pkt6.h>
 #include <dhcpsrv/srv_config.h>
 #include <string>
 
@@ -18,20 +18,20 @@ using namespace std;
  
 extern "C" {
  
-int ddns4_update(CalloutHandle& handle) {
+int ddns6_update(CalloutHandle& handle) {
 	string hostname;
 	string new_hostname;
 	bool fwd_update = true;
 	bool rev_update = false;
-	Pkt4Ptr resp4;
+	Pkt6Ptr resp6;
 	string ci_addr_str;
 	DdnsParamsPtr ddns_params;
-	Subnet4Ptr subnet;
+	Subnet6Ptr subnet;
 
 	handle.getArgument("hostname", hostname);
-	handle.getArgument("response4", resp4);
+	handle.getArgument("response6", resp6);
 	handle.getArgument("ddns-params", ddns_params);
-	handle.getArgument("subnet4", subnet);
+	handle.getArgument("subnet6", subnet);
 
 	uint32_t subnetid = ddns_params->getSubnetId();
 	std::pair<isc::asiolink::IOAddress, uint8_t> sn_addr = subnet->get();
@@ -55,11 +55,11 @@ int ddns4_update(CalloutHandle& handle) {
 		.arg(hostname)
 		.arg(new_hostname);
 
-	OptionPtr opt_hostname = resp4->getOption(DHO_HOST_NAME);
+	OptionPtr opt_hostname = resp6->getOption(DHO_HOST_NAME);
 	if (opt_hostname)
 		handle.setContext("orig-hostname", opt_hostname->toString());
 
-	OptionPtr opt_fqdn = resp4->getOption(DHO_FQDN);
+	OptionPtr opt_fqdn = resp6->getOption(DHO_FQDN);
 	if (opt_fqdn && (!opt_hostname || opt_fqdn->toString() != opt_hostname->toText()))
 		handle.setContext("orig-fqdn", opt_fqdn->toString());
 
