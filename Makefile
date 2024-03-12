@@ -1,30 +1,24 @@
-all:	example4.so example6.so
+all:	example.so
 
 .cpp.o:
 	g++ -c -I /usr/include/kea -fpic -o $@ $<
 
-example4.so: load_unload.o pkt4_receive.o pkt4_send.o version.o pkt_messages.o pkt_change_hostname_log.o multi_threading_compatible.o subnet.o
-	g++ -L /usr/lib/aarch64-linux-gnu -fpic -shared -o $@ $^ \
-		-lkea-dhcpsrv -lkea-dhcp++ -lkea-hooks -lkea-log -lkea-util -lkea-exceptions
-
-example6.so: load_unload.o pkt6_receive.o pkt6_send.o version.o pkt_messages.o pkt_change_hostname_log.o multi_threading_compatible.o subnet.o
+example.so: load_unload.o pkt_receive.o pkt_send.o version.o pkt_messages.o pkt_change_hostname_log.o multi_threading_compatible.o subnet.o
 	g++ -L /usr/lib/aarch64-linux-gnu -fpic -shared -o $@ $^ \
 		-lkea-dhcpsrv -lkea-dhcp++ -lkea-hooks -lkea-log -lkea-util -lkea-exceptions
 
 version.o:	version.cpp
 load_unload.o:	load_unload.cpp
-pkt4_receive.o:	pkt4_receive.cpp
-pkt4_send.o:	pkt4_send.cpp
-pkt6_receive.o:	pkt6_receive.cpp
-pkt6_send.o:	pkt6_send.cpp
-pkt4_messages.o: pkt_messages.cpp
-pkt4_change_hostname_log.o: pkt_change_hostname_log.cpp
+pkt_receive.o:	pkt_receive.cpp pkt46_receive.cpp
+pkt_send.o:	pkt_send.cpp pkt46_send.cpp
+pkt_messages.o: pkt_messages.cpp
+pkt_change_hostname_log.o: pkt_change_hostname_log.cpp
 multi_threading_compatible.o: multi_threading_compatible.cpp
 subnet.o:	subnet.cpp
 
-load_unload.o pkt4_receive.o pkt4_send.o pkt6_receive.o pkt6_send.o:	library_common.h
-load_unload.o pkt4_receive.o pkt4_send.o pkt6_receive.o pkt6_send.o pkt_messages.o pkt_change_hostname_log.o:	pkt_messages.h
-load_unload.o pkt4_receive.o pkt6_receive.o:	subnet.h load_unload.h
+load_unload.o pkt_receive.o pkt_send.o:	library_common.h
+load_unload.o pkt_receive.o pkt_send.o pkt_messages.o pkt_change_hostname_log.o:	pkt_messages.h
+load_unload.o pkt_receive.o:	subnet.h load_unload.h
 subnet.o:	subnet.h
 
 pkt_messages.h pkt_messages.cpp: pkt_messages.mes

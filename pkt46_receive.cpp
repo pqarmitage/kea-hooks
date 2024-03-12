@@ -1,37 +1,20 @@
-// pkt_receive4.cpp
- 
-#include <hooks/hooks.h>
-#include <dhcp/pkt4.h>
-#include <dhcpsrv/srv_config.h>
-#include <string>
 
-#include "library_common.h"
-#include "pkt_change_hostname_log.h"
- 
-#include "load_unload.h"
-
-    #include <fstream>
-
-using namespace isc::dhcp;
-using namespace isc::hooks;
-using namespace std;
- 
 extern "C" {
  
-int ddns4_update(CalloutHandle& handle) {
+int make_v(ddns,_update)(CalloutHandle& handle) {
 	string hostname;
 	string new_hostname;
 	bool fwd_update = true;
 	bool rev_update = false;
-	Pkt4Ptr resp;
+	make_v(Pkt,Ptr) resp;
 	string ci_addr_str;
 	DdnsParamsPtr ddns_params;
-	Subnet4Ptr subnet;
+	make_v(Subnet,Ptr) subnet;
 
 	handle.getArgument("hostname", hostname);
-	handle.getArgument("response4", resp);
+	handle.getArgument("response" IPvs, resp);
 	handle.getArgument("ddns-params", ddns_params);
-	handle.getArgument("subnet4", subnet);
+	handle.getArgument("subnet" IPvs, subnet);
 
 	uint32_t subnetid = ddns_params->getSubnetId();
 	std::pair<isc::asiolink::IOAddress, uint8_t> sn_addr = subnet->get();

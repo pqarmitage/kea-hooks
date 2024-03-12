@@ -1,5 +1,5 @@
 *.so
 *.o
-pkt4_messages.cpp
-pkt4_messages.h
+pkt_messages.cpp
+pkt_messages.h
 test
