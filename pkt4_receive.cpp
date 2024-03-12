@@ -6,7 +6,7 @@
 #include <string>
 
 #include "library_common.h"
-#include "pkt4_change_hostname_log.h"
+#include "pkt_change_hostname_log.h"
  
 #include "load_unload.h"
 
@@ -23,13 +23,13 @@ int ddns4_update(CalloutHandle& handle) {
 	string new_hostname;
 	bool fwd_update = true;
 	bool rev_update = false;
-	Pkt4Ptr resp4;
+	Pkt4Ptr resp;
 	string ci_addr_str;
 	DdnsParamsPtr ddns_params;
 	Subnet4Ptr subnet;
 
 	handle.getArgument("hostname", hostname);
-	handle.getArgument("response4", resp4);
+	handle.getArgument("response4", resp);
 	handle.getArgument("ddns-params", ddns_params);
 	handle.getArgument("subnet4", subnet);
 
@@ -51,15 +51,15 @@ int ddns4_update(CalloutHandle& handle) {
 	if (new_hostname != hostname)
 		handle.setArgument("hostname", new_hostname);
 
-	LOG_INFO(pkt4_change_hostname::pkt4_change_hostname_logger, isc::log::NCHG_HOSTNAME_MODIFIED)
+	LOG_INFO(pkt_change_hostname::pkt_change_hostname_logger, isc::log::NCHG_HOSTNAME_MODIFIED)
 		.arg(hostname)
 		.arg(new_hostname);
 
-	OptionPtr opt_hostname = resp4->getOption(DHO_HOST_NAME);
+	OptionPtr opt_hostname = resp->getOption(DHO_HOST_NAME);
 	if (opt_hostname)
 		handle.setContext("orig-hostname", opt_hostname->toString());
 
-	OptionPtr opt_fqdn = resp4->getOption(DHO_FQDN);
+	OptionPtr opt_fqdn = resp->getOption(DHO_FQDN);
 	if (opt_fqdn && (!opt_hostname || opt_fqdn->toString() != opt_hostname->toText()))
 		handle.setContext("orig-fqdn", opt_fqdn->toString());
 

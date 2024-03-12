@@ -9,7 +9,7 @@
 #include <list>
 
 #include "library_common.h"
-#include "pkt4_change_hostname_log.h"
+#include "pkt_change_hostname_log.h"
  
 #include "subnet.h"
 
@@ -18,7 +18,7 @@
 
 using namespace isc::hooks;
 using namespace isc::log;
-using namespace pkt4_change_hostname;
+using namespace pkt_change_hostname;
 using namespace pqa;
  
 extern "C" {
@@ -115,7 +115,7 @@ processParameters(LibraryHandle& handle) {
 	if (!params ||
 	    (params->getType() != isc::data::Element::map) ||
 	    (params->size() == 0)) {
-		LOG_ERROR(pkt4_change_hostname_logger, NCHG_REQUIRES_CONFIG);
+		LOG_ERROR(pkt_change_hostname_logger, NCHG_REQUIRES_CONFIG);
 		return true;
 	}
 
@@ -126,13 +126,13 @@ processParameters(LibraryHandle& handle) {
 		if (elem.first == "ignore-subnets") {
 			// A list of strings
 			if (value->getType() != isc::data::Element::list) {
-				LOG_ERROR(pkt4_change_hostname_logger, NCHG_IGNORE_SUBNETS_NOT_LIST).arg(value->str());
+				LOG_ERROR(pkt_change_hostname_logger, NCHG_IGNORE_SUBNETS_NOT_LIST).arg(value->str());
 				return true;
 			}
 
 			for (const auto& v : value->listValue()) {
 				if (v->getType() != isc::data::Element::string) {
-					LOG_ERROR(pkt4_change_hostname_logger, NCHG_IGNORE_SUBNETS_LIST_MEMBER_NOT_STRING).arg(value->str()).arg(v->str());
+					LOG_ERROR(pkt_change_hostname_logger, NCHG_IGNORE_SUBNETS_LIST_MEMBER_NOT_STRING).arg(value->str()).arg(v->str());
 					return true;
 				}
 
@@ -145,7 +145,7 @@ processParameters(LibraryHandle& handle) {
 		if (elem.first == "process-subnets") {
 			// A map of <string, list<string>>
 			if (value->getType() != isc::data::Element::map) {
-				LOG_ERROR(pkt4_change_hostname_logger, NCHG_PROCESS_SUBNETS_NOT_MAP).arg(elem.first).arg(value->str());
+				LOG_ERROR(pkt_change_hostname_logger, NCHG_PROCESS_SUBNETS_NOT_MAP).arg(elem.first).arg(value->str());
 				return true;
 			}
 
@@ -153,13 +153,13 @@ processParameters(LibraryHandle& handle) {
 			for (const auto& v : val) {
 				std::list<std::string> rules;
 				if (v.second->getType() != isc::data::Element::list) {
-					LOG_ERROR(pkt4_change_hostname_logger, NCHG_PROCESS_SUBNETS_MAP_MEMBER_NOT_LIST).arg(v.first).arg(v.second->str());
+					LOG_ERROR(pkt_change_hostname_logger, NCHG_PROCESS_SUBNETS_MAP_MEMBER_NOT_LIST).arg(v.first).arg(v.second->str());
 					return true;
 				}
 
 				for (const auto& e : v.second->listValue()) {
 					if (e->getType() != isc::data::Element::string) {
-						LOG_ERROR(pkt4_change_hostname_logger, NCHG_PROCESS_SUBNETS_MAP_LIST_MEMBER_NOT_STRING).arg(v.first).arg(v.second->str()).arg(e->str());
+						LOG_ERROR(pkt_change_hostname_logger, NCHG_PROCESS_SUBNETS_MAP_LIST_MEMBER_NOT_STRING).arg(v.first).arg(v.second->str()).arg(e->str());
 						return true;
 					}
 
@@ -172,7 +172,7 @@ processParameters(LibraryHandle& handle) {
 			continue;
 		}
 
-		LOG_ERROR(pkt4_change_hostname_logger, NCHG_PARAMETER_UNKNOWN).arg(elem.first);
+		LOG_ERROR(pkt_change_hostname_logger, NCHG_PARAMETER_UNKNOWN).arg(elem.first);
 		return true;
 	}
 
