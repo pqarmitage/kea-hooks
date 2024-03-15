@@ -59,7 +59,7 @@ int make_v(pkt,_send)(CalloutHandle& handle)
 	}
 
 	if (!orig_hostname.empty() && !new_hostname.empty()) {
-		 LOG_INFO(pkt_change_hostname::pkt_change_hostname_logger, isc::log::NCHG_HOSTNAME_RESTORED)
+		 LOG_DEBUG(pkt_change_hostname::pkt_change_hostname_logger, isc::log::DBGLVL_PKT_HANDLING, isc::log::NCHG_HOSTNAME_RESTORED)
 				.arg(new_hostname)
 				.arg(orig_hostname);
 	}

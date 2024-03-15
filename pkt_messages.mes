@@ -3,7 +3,7 @@
  
 $NAMESPACE isc::log
  
-% NCHG_HOSTNAME_MODIFIED hostname changed from %1 to %2
+% NCHG_HOSTNAME_MODIFIED DDNS hostname changed from %1 to %2
 The hostname was changed prior to the DDNS update
 
 % NCHG_HOSTNAME_RESTORED hostname restored from %1 to %2
