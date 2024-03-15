@@ -26,8 +26,9 @@ int make_v(pkt,_send)(CalloutHandle& handle)
 			response_ptr->delOption(DHO_HOST_NAME);
 			response_ptr->addOption(opt_hostname_resp);
 		} catch (const NoSuchCalloutContext&) {
-			// This would mean the kea has added the HOST_NAME option AFTER the call of ddns{4|6}_update()
-			LOG_INFO(pkt_change_hostname::pkt_change_hostname_logger, isc::log::NCHG_HOSTNAME_NO_ORIG)
+			// This might mean the kea has added the HOST_NAME option AFTER the call of ddns{4|6}_update()
+			// but more likely we didn't modify the hostname
+			LOG_DEBUG(pkt_change_hostname::pkt_change_hostname_logger, isc::log::DBGLVL_PKT_HANDLING, isc::log::NCHG_HOSTNAME_NO_ORIG)
 				.arg(new_hostname);
 		}
 	}
@@ -50,8 +51,9 @@ int make_v(pkt,_send)(CalloutHandle& handle)
 			response_ptr->delOption(DHO_FQDN);
 			response_ptr->addOption(opt_fqdn_resp);
 		} else {
-			// This would mean the kea has added the FQDN option AFTER the call of ddns{4|6}_update()
-			LOG_INFO(pkt_change_hostname::pkt_change_hostname_logger, isc::log::NCHG_FQDN_NO_ORIG)
+			// This might mean the kea has added the FQDN option AFTER the call of ddns{4|6}_update()
+			// but more likely we didn't modify the hostname
+			LOG_DEBUG(pkt_change_hostname::pkt_change_hostname_logger, isc::log::DBGLVL_PKT_HANDLING, isc::log::NCHG_FQDN_NO_ORIG)
 				.arg(new_hostname);
 		}
 	}
